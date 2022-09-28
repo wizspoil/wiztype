@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "wiztype"
+version = "0.1.0"
+description = "A type dumper for wizard101"
+authors = ["StarrFox <starrfox6312@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/StarrFox/wiztype"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+cleo = "^0.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

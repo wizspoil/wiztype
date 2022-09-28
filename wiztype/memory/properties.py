@@ -1,0 +1,194 @@
+from typing import Any
+
+from memobj import MemoryProperty, MemoryObject
+
+
+class CppString(MemoryProperty):
+    def __init__(self, offset: int | None, encoding: str = "utf-8", sso_size: int = 16):
+        super().__init__(offset)
+        self.encoding = encoding
+        self.sso_size = sso_size
+
+    def from_memory(self) -> Any:
+        length = self.memory_object.memobj_process.read_formatted(
+            self.memory_object.base_address + self.offset + 16,
+            "i",
+        )
+
+        if length >= self.sso_size:
+            if self.memory_object.memobj_process.process_64_bit:
+                pointer_format = "Q"
+            else:
+                pointer_format = "I"
+
+            address = self.read_formatted_from_offset(pointer_format)
+
+        else:
+            address = self.memory_object.base_address + self.offset
+
+        try:
+            return self.memory_object.memobj_process.read_memory(address, length).decode(self.encoding)
+        except UnicodeDecodeError:
+            return ""
+
+    def to_memory(self, value: Any):
+        raise NotImplementedError()
+
+
+class SharedVector(MemoryProperty):
+    def __init__(
+            self,
+            offset: int | None,
+            max_size: int = 100,
+            object_type: type[MemoryObject] | str | None = None,
+    ):
+        super().__init__(offset)
+        self.max_size = max_size
+        self.object_type = object_type
+
+    def from_memory(self) -> Any:
+        start = self.read_formatted_from_offset("Q")
+        end = self.memory_object.memobj_process.read_formatted(
+            self.memory_object.base_address + 8 + self.offset,
+            "Q"
+        )
+
+        size = end - start
+        element_number = size // 16
+
+        # less than 0 on dealloc
+        if size <= 0:
+            return []
+
+        if element_number > self.max_size:
+            raise ValueError(f"Size was {element_number} and the max was {self.max_size}")
+
+        element_data = self.memory_object.memobj_process.read_memory(start, size)
+
+        pointers = []
+        data_position = 0
+        for _ in range(element_number):
+            pointers.append(int.from_bytes(element_data[data_position:data_position+8], "little", signed=False))
+            # 8 byte pointer, 8 byte ref data*
+            data_position += 16
+
+        if self.object_type is None:
+            return pointers
+
+        if isinstance(self.object_type, str):
+            perhaps_object_type = globals().get(self.object_type)
+
+            if perhaps_object_type is None:
+                raise ValueError(f"{self.object_type} is not defined in this file's scope")
+
+            self.object_type = perhaps_object_type
+
+        objects = []
+        for pointer in pointers:
+            objects.append(self.object_type(pointer, self.memory_object.memobj_process))
+
+        return objects
+
+    def to_memory(self, value: Any):
+        pass
+
+
+class PropertyEnumOptions(MemoryProperty):
+    def read_cpp_string(self, address: int, *, sso_size: int = 16, encoding: str = "utf-8"):
+        length = self.memory_object.memobj_process.read_formatted(
+            address + 16,
+            "i",
+        )
+
+        if length >= sso_size:
+            if self.memory_object.memobj_process.process_64_bit:
+                pointer_format = "Q"
+            else:
+                pointer_format = "I"
+
+            address = self.read_formatted_from_offset(pointer_format)
+
+        else:
+            address = address
+
+        try:
+            return self.memory_object.memobj_process.read_memory(address, length).decode(encoding)
+        except UnicodeDecodeError:
+            return ""
+
+    def from_memory(self) -> Any:
+        # TODO: this should be part of MemoryProperty
+        if self.memory_object.memobj_process.process_64_bit:
+            pointer_format = "Q"
+        else:
+            pointer_format = "I"
+
+        start = self.read_formatted_from_offset(pointer_format)
+
+        if start == 0:
+            return None
+
+        end = self.memory_object.memobj_process.read_formatted(
+            self.memory_object.base_address + 0xA0,
+            pointer_format
+        )
+
+        total_size = end - start
+
+        current = start
+        enum_opts = {}
+        for entry in range(total_size // 0x48):
+            name = self.read_cpp_string(current + 0x28)
+
+            if string_value := self.read_cpp_string(current):
+                enum_opts[name] = string_value
+            else:
+                enum_opts[name] = self.memory_object.memobj_process.read_formatted(
+                    current + 0x20, "i"
+                )
+
+            current += 0x48
+
+        return enum_opts
+
+    def to_memory(self, value: Any):
+        raise NotImplementedError()
+
+
+class ContainerName(MemoryProperty):
+    def from_memory(self) -> Any:
+        # noinspection PyUnresolvedReferences
+        vtable = self.memory_object.vtable
+        lea_func_addr = self.memory_object.memobj_process.read_formatted(vtable + 0x8, "q")
+        name_offset = self.memory_object.memobj_process.read_formatted(lea_func_addr + 3, "i")
+        # I need to read a null terminated string, but I can't use my MemoryProperty
+        # this is an oversight
+        string_bytes = self.memory_object.memobj_process.read_memory(
+            lea_func_addr + 7 + name_offset,
+            20,
+        )
+
+        end = string_bytes.find(b"\x00")
+
+        if end == 0:
+            return ""
+
+        if end == -1:
+            raise ValueError("No null end")
+
+        return string_bytes[:end].decode()
+
+    def to_memory(self, value: Any):
+        raise NotImplementedError()
+
+
+class ContainerIsDynamic(MemoryProperty):
+    def from_memory(self) -> Any:
+        # noinspection PyUnresolvedReferences
+        vtable = self.memory_object.vtable
+        get_dynamic_func_addr = self.memory_object.memobj_process.read_formatted(vtable + 0x20, "Q")
+        res_byte = self.memory_object.memobj_process.read_formatted(get_dynamic_func_addr + 1, "?")
+        return res_byte
+
+    def to_memory(self, value: Any):
+        raise NotImplementedError()
