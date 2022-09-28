@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 
-from .memory import HashNode, Type, Property
+from wiztype.memory import HashNode, Type, Property
 
 
 class TypeDumper:

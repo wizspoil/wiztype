@@ -8,8 +8,9 @@ readme = "README.md"
 repository = "https://github.com/StarrFox/wiztype"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-cleo = "^0.8.1"
+python = "^3.11rc2"
+memobj = "^0.3.3"
+click = "^8.1.3"
 
 
 [build-system]

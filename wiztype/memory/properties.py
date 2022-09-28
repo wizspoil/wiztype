@@ -39,7 +39,7 @@ class SharedVector(MemoryProperty):
     def __init__(
             self,
             offset: int | None,
-            max_size: int = 100,
+            max_size: int = 500,
             object_type: type[MemoryObject] | str | None = None,
     ):
         super().__init__(offset)
@@ -47,10 +47,10 @@ class SharedVector(MemoryProperty):
         self.object_type = object_type
 
     def from_memory(self) -> Any:
-        start = self.read_formatted_from_offset("Q")
+        start = self.read_formatted_from_offset(self.pointer_format_string)
         end = self.memory_object.memobj_process.read_formatted(
             self.memory_object.base_address + 8 + self.offset,
-            "Q"
+            self.pointer_format_string
         )
 
         size = end - start
@@ -76,7 +76,8 @@ class SharedVector(MemoryProperty):
             return pointers
 
         if isinstance(self.object_type, str):
-            perhaps_object_type = globals().get(self.object_type)
+            import wiztype.memory.types
+            perhaps_object_type = getattr(wiztype.memory.types, self.object_type)
 
             if perhaps_object_type is None:
                 raise ValueError(f"{self.object_type} is not defined in this file's scope")
