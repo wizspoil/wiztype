@@ -24,7 +24,7 @@ def _get_root_node(process: WindowsProcess) -> HashNode:
     pointer = process.read_formatted(hash_tree_addr, "Q")
     address = process.read_formatted(pointer, "Q")
 
-    return HashNode(address, process)
+    return HashNode(address=address, process=process)
 
 
 def _get_children_nodes(node: HashNode, nodes: set):

@@ -144,3 +144,12 @@ class JsonTypeDumper(TypeDumper):
             props.update(prop)
 
         return {name: {"bases": base_names, "hash": class_hash, "properties": props}}
+
+
+if __name__ == "__main__":
+    from wiztype.type_tree import get_type_tree
+
+    tree = get_type_tree()
+    dumper = JsonTypeDumper(tree)
+
+    dumper.dump("path/to/output.json")

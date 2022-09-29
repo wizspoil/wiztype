@@ -23,10 +23,17 @@ version = "0.3.3"
 description = "A library for defining objects in memory"
 category = "main"
 optional = false
-python-versions = ">=3.11rc2,<4.0"
+python-versions = "^3.11rc2"
+develop = false
 
 [package.dependencies]
-regex = ">=2022.9.13,<2023.0.0"
+regex = "^2022.9.13"
+
+[package.source]
+type = "git"
+url = "https://github.com/StarrFox/memobj"
+reference = "HEAD"
+resolved_reference = "be3d2b8a1628d88bac6ce98a733624fb9b2c678a"
 
 [[package]]
 name = "regex"
@@ -39,7 +46,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11rc2"
-content-hash = "f4b2cfac80787d0d5d7ece90f221dd26edcf61815833be3fad51eb995b9aa3ee"
+content-hash = "d71abadd357a565e0104dba41f2471f5d0cd6150a55a639823ed0c6fa716ddc7"
 
 [metadata.files]
 click = [
@@ -50,10 +57,7 @@ colorama = [
     {file = "colorama-0.4.5-py2.py3-none-any.whl", hash = "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da"},
     {file = "colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
 ]
-memobj = [
-    {file = "memobj-0.3.3-py3-none-any.whl", hash = "sha256:3c4e09765d22dd1e89bfebdd1c1f67159df32bb33af1abf6585ef49227ead8a9"},
-    {file = "memobj-0.3.3.tar.gz", hash = "sha256:5c74b3bc9ca0ed05284065a6c27053c7031d8d9580763aa1eff9e7c2c1780d68"},
-]
+memobj = []
 regex = [
     {file = "regex-2022.9.13-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:0394265391a86e2bbaa7606e59ac71bd9f1edf8665a59e42771a9c9adbf6fd4f"},
     {file = "regex-2022.9.13-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:86df2049b18745f3cd4b0f4c4ef672bfac4b80ca488e6ecfd2bbfe68d2423a2c"},

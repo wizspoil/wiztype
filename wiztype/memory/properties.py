@@ -34,7 +34,11 @@ class CppString(MemoryProperty):
     def to_memory(self, value: Any):
         raise NotImplementedError()
 
+    def memory_size(self) -> int:
+        return 32
 
+
+# TODO rework this into a MemoryObject
 class SharedVector(MemoryProperty):
     def __init__(
             self,
@@ -86,12 +90,19 @@ class SharedVector(MemoryProperty):
 
         objects = []
         for pointer in pointers:
-            objects.append(self.object_type(pointer, self.memory_object.memobj_process))
+            objects.append(self.object_type(
+                address=pointer,
+                process=self.memory_object.memobj_process,
+            ))
 
         return objects
 
     def to_memory(self, value: Any):
         pass
+
+    def memory_size(self) -> int:
+        pointer_size = 8 if self.memory_object.memobj_process.process_64_bit else 4
+        return pointer_size * 3
 
 
 class PropertyEnumOptions(MemoryProperty):
@@ -118,20 +129,14 @@ class PropertyEnumOptions(MemoryProperty):
             return ""
 
     def from_memory(self) -> Any:
-        # TODO: this should be part of MemoryProperty
-        if self.memory_object.memobj_process.process_64_bit:
-            pointer_format = "Q"
-        else:
-            pointer_format = "I"
-
-        start = self.read_formatted_from_offset(pointer_format)
+        start = self.read_formatted_from_offset(self.pointer_format_string)
 
         if start == 0:
             return None
 
         end = self.memory_object.memobj_process.read_formatted(
             self.memory_object.base_address + 0xA0,
-            pointer_format
+            self.pointer_format_string
         )
 
         total_size = end - start
@@ -154,6 +159,10 @@ class PropertyEnumOptions(MemoryProperty):
 
     def to_memory(self, value: Any):
         raise NotImplementedError()
+
+    def memory_size(self) -> int:
+        pointer_size = 8 if self.memory_object.memobj_process.process_64_bit else 4
+        return pointer_size * 2
 
 
 class ContainerName(MemoryProperty):
@@ -182,14 +191,24 @@ class ContainerName(MemoryProperty):
     def to_memory(self, value: Any):
         raise NotImplementedError()
 
+    # TODO: same as below
+    def memory_size(self) -> int:
+        return 0
+
 
 class ContainerIsDynamic(MemoryProperty):
     def from_memory(self) -> Any:
         # noinspection PyUnresolvedReferences
         vtable = self.memory_object.vtable
-        get_dynamic_func_addr = self.memory_object.memobj_process.read_formatted(vtable + 0x20, "Q")
+        get_dynamic_func_addr = self.memory_object.memobj_process.read_formatted(
+            vtable + 0x20, self.pointer_format_string
+        )
         res_byte = self.memory_object.memobj_process.read_formatted(get_dynamic_func_addr + 1, "?")
         return res_byte
 
     def to_memory(self, value: Any):
         raise NotImplementedError()
+
+    # TODO: this should be a Pointer
+    def memory_size(self) -> int:
+        return 0
