@@ -9,8 +9,8 @@ repository = "https://github.com/StarrFox/wiztype"
 
 [tool.poetry.dependencies]
 python = "^3.11rc2"
-memobj = {git = "https://github.com/StarrFox/memobj"}
 click = "^8.1.3"
+memobj = "^0.7.0"
 
 
 [build-system]

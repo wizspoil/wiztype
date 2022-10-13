@@ -28,6 +28,10 @@ def _get_root_node(process: WindowsProcess) -> HashNode:
 
 
 def _get_children_nodes(node: HashNode, nodes: set):
+    try:
+        print(f"{node.is_leaf=} {node.node_data.name=}")
+    except ValueError:
+        print(f"{node.is_leaf=} [couldn't read]")
     nodes.add(node)
 
     if not node.is_leaf:

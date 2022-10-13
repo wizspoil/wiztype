@@ -80,13 +80,12 @@ class SharedVector(MemoryProperty):
             return pointers
 
         if isinstance(self.object_type, str):
-            import wiztype.memory.types
-            perhaps_object_type = getattr(wiztype.memory.types, self.object_type)
+            typed_object_type = MemoryObject.__memory_object_instances__.get(self.object_type)
 
-            if perhaps_object_type is None:
-                raise ValueError(f"{self.object_type} is not defined in this file's scope")
+            if typed_object_type is None:
+                raise ValueError(f"No MemoryObject type named {self.object_type}")
 
-            self.object_type = perhaps_object_type
+            self.object_type = typed_object_type
 
         objects = []
         for pointer in pointers:
