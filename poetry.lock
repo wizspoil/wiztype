@@ -23,7 +23,7 @@ version = "0.7.0"
 description = "A library for defining objects in memory"
 category = "main"
 optional = false
-python-versions = "^3.10"
+python-versions = "^3.11rc2"
 develop = false
 
 [package.dependencies]
@@ -32,8 +32,8 @@ regex = "^2022.9.13"
 [package.source]
 type = "git"
 url = "https://github.com/StarrFox/memobj"
-reference = "3.10"
-resolved_reference = "34962783e2e3ffcfa779ac5ac9a86d02e444d35a"
+reference = "HEAD"
+resolved_reference = "9eebcf70bdeef80ffd1f8aa9d7ed6fef2f662c1e"
 
 [[package]]
 name = "regex"
@@ -45,8 +45,8 @@ python-versions = ">=3.6"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.10"
-content-hash = "7a86d4b050c52a16db92c46ad4c48627a3e94efaa10327dd74c6516de5fbdaab"
+python-versions = "^3.11rc2"
+content-hash = "d71abadd357a565e0104dba41f2471f5d0cd6150a55a639823ed0c6fa716ddc7"
 
 [metadata.files]
 click = [
