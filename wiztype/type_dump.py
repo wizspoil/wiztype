@@ -18,22 +18,14 @@ class TypeDumper:
 
     def class_loop(self, type_tree):
         for name, node in type_tree.items():
-            print(f"{name=}")
             data = node.node_data
 
             formatted_properties = []
 
-            try:
-                property_list = data.property_list
-            except ValueError:
-                pass
-            else:
-
+            if property_list := data.property_list:
                 for property_ in property_list.properties:
-                    enum_options = property_.enum_options
-
                     formatted_enum_options = []
-                    if enum_options.base_address:
+                    if (enum_options := property_.enum_options) is not None:
                         for enum_option_name, enum_option_value in enum_options.items():
                             formatted_enum_options.append(
                                 self.format_enum_option(
@@ -56,7 +48,6 @@ class TypeDumper:
                 name, base_names, class_hash, formatted_properties
             )
 
-            print(f"{formatted_class=}")
             yield formatted_class
 
     @staticmethod
@@ -155,7 +146,6 @@ if __name__ == "__main__":
     from wiztype.type_tree import get_type_tree
 
     tree = get_type_tree()
-    print(f"{tree=}")
     dumper = JsonTypeDumper(tree)
 
     dumper.dump("output.json")

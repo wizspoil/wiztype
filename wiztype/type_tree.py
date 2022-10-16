@@ -28,17 +28,15 @@ def _get_root_node(process: WindowsProcess) -> HashNode:
 
 
 def _get_children_nodes(node: HashNode, nodes: set):
-    try:
-        print(f"{node.is_leaf=} {node.node_data.name=}")
-    except ValueError:
-        print(f"{node.is_leaf=} [couldn't read]")
     nodes.add(node)
 
-    if not node.is_leaf:
+    if node.is_leaf is False:
         if left_node := node.left:
-            _get_children_nodes(left_node, nodes)
+            if left_node not in nodes:
+                _get_children_nodes(left_node, nodes)
         if right_node := node.right:
-            _get_children_nodes(right_node, nodes)
+            if right_node not in nodes:
+                _get_children_nodes(right_node, nodes)
 
     return nodes
 
@@ -66,9 +64,6 @@ def get_type_tree() -> dict[str, HashNode]:
         if node.is_leaf:
             continue
 
-        data = node.node_data
-
-        if data:
-            hash_map[data.name] = node
+        hash_map[node.node_data.name] = node
 
     return hash_map
