@@ -1,0 +1,26 @@
+name: Poetry Autotag
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Set up Poetry
+      uses: abatilo/actions-poetry@v2
+      with:
+          poetry-version: "1.2.1"
+    - name: Fetch current tags
+      run: git fetch --tags
+    - name: Add new tag
+      run: |
+        poetry version | awk '{print $2}' | xargs git tag && git push --tags
+        exit 0
+
