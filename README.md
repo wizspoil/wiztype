@@ -1,6 +1,9 @@
 # wiztype
 A type dumper for wizard101
 
+## install
+`pip install wiztype`
+
 ## usage
 an instance of wizard101 must be open for all commands
 
@@ -13,6 +16,8 @@ $ wiztype --indent 4
 $ wiztype --version 1 --indent 4
 ```
 
+## support
+discord: https://discord.gg/2u7bGvhYcJ
 
 ## json spec
 
