@@ -38,8 +38,8 @@ python-versions = ">=3.6"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.11rc2"
-content-hash = "8975f4d4049f7599c726cf22cd879f25cc9230a7353c3a602c066fc9584bb3f7"
+python-versions = "^3.10"
+content-hash = "6ee8c9a6f219708267d51be188829bf847663544d211de308bea5a2518eef762"
 
 [metadata.files]
 click = [
