@@ -99,18 +99,18 @@ class TypeDumper:
         raise NotImplemented()
 
 
-class JsonTypeDumper(TypeDumper):
+class JsonTypeDumperV1(TypeDumper):
     @staticmethod
-    def output(output_file, output):
+    def output(output_file, output, indent: int | None = None):
         with open(output_file, "w+") as fp:
-            json.dump(output, fp, indent=4)
+            json.dump(output, fp, indent=indent)
 
-    def dump(self, output_file: str | Path, *, indent: int = 4):
+    def dump(self, output_file: str | Path, *, indent: int | None = None):
         output = {}
         for formatted_class in self.class_loop(self.type_tree):
             output.update(formatted_class)
 
-        self.output(output_file, output)
+        self.output(output_file, output, indent)
 
     def format_enum_option(self, name: str, value: int):
         return {name: value}
@@ -142,10 +142,63 @@ class JsonTypeDumper(TypeDumper):
         return {name: {"bases": base_names, "hash": class_hash, "properties": props}}
 
 
+class JsonTypeDumperV2(JsonTypeDumperV1):
+    version = 2
+
+    def dump(self, output_file: str | Path, *, indent: int | None = None):
+        output = {
+            "version": self.version,
+            "classes": {},
+        }
+        for formatted_class in self.class_loop(self.type_tree):
+            output["classes"].update(formatted_class)
+
+        self.output(output_file, output, indent)
+
+    def format_enum_option(self, name: str, value: int | str):
+        try:
+            return {name: int(value)}
+        except ValueError:
+            return {name: value}
+
+    def format_property(
+        self, name: str, info: dict[str, str], enum_options: list[dict]
+    ):
+        res = {name: info}
+
+        if enum_options:
+            options = {}
+
+            for enum_dict in enum_options:
+                options.update(enum_dict)
+
+            # noinspection PyTypeChecker
+            res[name]["enum_options"] = options
+
+        return res
+
+    def format_class(
+        self, name: str, base_names: list[str], class_hash: int, properties: dict
+    ):
+        props = {}
+
+        for prop in properties:
+            props.update(prop)
+
+        return {
+            str(class_hash): {
+                "name": name,
+                "bases": base_names,
+                "hash": class_hash,
+                "properties": props,
+            }
+        }
+
+
 if __name__ == "__main__":
     from wiztype.type_tree import get_type_tree
 
     tree = get_type_tree()
-    dumper = JsonTypeDumper(tree)
+    dumper = JsonTypeDumperV2(tree)
 
-    dumper.dump("output.json")
+    dumper.dump("output.json", indent=None)
