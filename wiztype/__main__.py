@@ -22,6 +22,7 @@ def main(outfile: Path, version: int, indent: int | None):
             dump_type = wiztype.JsonTypeDumperV2
         case _:
             click.echo(f"{version} is not a supported version")
+            exit(1)
 
     process = WindowsProcess.from_name("WizardGraphicalClient.exe")
     wiz_bin = process.executable_path.parent
@@ -38,7 +39,7 @@ def main(outfile: Path, version: int, indent: int | None):
     click.echo(f"dumping types for revision {revision} to {outfile}")
 
     tree = wiztype.get_type_tree()
-    dumper = wiztype.JsonTypeDumperV2(tree)
+    dumper = dump_type(tree)
 
     dumper.dump(outfile, indent=indent)
 
