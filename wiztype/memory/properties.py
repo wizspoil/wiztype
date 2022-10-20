@@ -108,7 +108,7 @@ class PropertyEnumOptions(MemoryProperty):
     def read_cpp_string(self, address: int, *, sso_size: int = 16, encoding: str = "utf-8"):
         length = self.memory_object.memobj_process.read_formatted(
             address + 16,
-            "i",
+            "I",
         )
 
         if length >= sso_size:
@@ -117,7 +117,7 @@ class PropertyEnumOptions(MemoryProperty):
             else:
                 pointer_format = "I"
 
-            address = self.read_formatted_from_offset(pointer_format)
+            address = self.memory_object.memobj_process.read_formatted(address, pointer_format)
 
         else:
             address = address
