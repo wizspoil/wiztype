@@ -112,7 +112,7 @@ class JsonTypeDumperV1(TypeDumper):
 
         self.output(output_file, output, indent)
 
-    def format_enum_option(self, name: str, value: int):
+    def format_enum_option(self, name: str, value: str):
         return {name: value}
 
     def format_property(
@@ -157,7 +157,7 @@ class JsonTypeDumperV2(JsonTypeDumperV1):
 
     def format_enum_option(self, name: str, value: int | str):
         try:
-            return {name: int(value)}
+            return {name: int(value) & 0xFFFF_FFFF}
         except ValueError:
             return {name: value}
 

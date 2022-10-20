@@ -145,11 +145,12 @@ class PropertyEnumOptions(MemoryProperty):
         for entry in range(total_size // 0x48):
             name = self.read_cpp_string(current + 0x28)
 
+            # TODO: int variants are always returned as string
             if string_value := self.read_cpp_string(current):
                 enum_opts[name] = string_value
             else:
                 enum_opts[name] = self.memory_object.memobj_process.read_formatted(
-                    current + 0x20, "i"
+                    current + 0x20, "I"
                 )
 
             current += 0x48
