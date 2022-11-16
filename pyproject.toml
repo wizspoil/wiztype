@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wiztype"
-version = "0.1.3"
+version = "0.1.4"
 description = "A type dumper for wizard101"
 authors = ["StarrFox <starrfox6312@gmail.com>"]
 license = "MIT"
@@ -11,6 +11,7 @@ repository = "https://github.com/StarrFox/wiztype"
 python = "^3.10"
 click = "^8.1.3"
 memobj = "^0.8.1"
+iced-x86 = "^1.17.0"
 
 [tool.poetry.scripts]
 wiztype = "wiztype.__main__:main"

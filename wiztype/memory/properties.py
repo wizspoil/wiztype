@@ -1,5 +1,6 @@
 from typing import Any
 
+from iced_x86 import Decoder, Instruction, Code, Register, MemoryOperand
 from memobj import MemoryProperty, MemoryObject
 
 
@@ -203,12 +204,34 @@ class ContainerIsDynamic(MemoryProperty):
         get_dynamic_func_addr = self.memory_object.memobj_process.read_formatted(
             vtable + 0x20, self.pointer_format_string
         )
-        res_byte = self.memory_object.memobj_process.read_formatted(get_dynamic_func_addr + 1, "?")
-        return res_byte
+
+        get_dynamic_bytes = self.memory_object.memobj_process.read_memory(get_dynamic_func_addr, 3)
+
+        decoder = Decoder(64, get_dynamic_bytes)
+
+        xor_al_al = Instruction.create_reg_reg(
+            Code.XOR_R8_RM8,
+            Register.AL,
+            Register.AL
+        )
+        mov_al_1 = Instruction.create_reg_i32(
+            Code.MOV_R8_IMM8,
+            Register.AL,
+            1
+        )
+
+        for instruction in decoder:
+            if instruction == xor_al_al:
+                return False
+            elif instruction == mov_al_1:
+                return True
+            # Note: ret should never enter here
+            else:
+                raise RuntimeError(f"Invalid dynamic container instruction: {instruction=}")
 
     def to_memory(self, value: Any):
         raise NotImplementedError()
 
     # TODO: this should be a Pointer
     def memory_size(self) -> int:
-        return 0
+        return 8
