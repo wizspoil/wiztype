@@ -55,7 +55,7 @@ class Property(MemoryObject):
     offset: int = Signed4(0x68)
     type: "Type" = DereffedPointer(0x70, "Type")
     flags: int = Signed4(0x80)
-    note: str = CppString(0x80)
+    note: str = CppString(0x88)
     ps_info: str = CppString(0x90)
     enum_options = PropertyEnumOptions(0x98)
 
