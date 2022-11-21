@@ -27,7 +27,7 @@ python-versions = "~=3.7"
 
 [[package]]
 name = "memobj"
-version = "0.8.1"
+version = "0.9.1"
 description = "A library for defining objects in memory"
 category = "main"
 optional = false
@@ -47,7 +47,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "316d92cf63c77041117af8c52e167b224927a76ef4e8991dee27fe0ef6729f7e"
+content-hash = "6326cdd2a792910c3ad819b9d8418659ff3fc15cbcaf67ee33afefd250a951c7"
 
 [metadata.files]
 click = [
@@ -71,8 +71,8 @@ iced-x86 = [
     {file = "iced_x86-1.17.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:2a43e05f8b8cb121833982dd2e4c69937c252a8f8db016de4939bbed9c379dc1"},
 ]
 memobj = [
-    {file = "memobj-0.8.1-py3-none-any.whl", hash = "sha256:9b2c0e40710530372b5c5af772fb701c2a8bc1118ffee342f62e82308b3b0b11"},
-    {file = "memobj-0.8.1.tar.gz", hash = "sha256:6d686f95a9b3d38b67f51dfc7f7b6835a1d7920062adb4f9bf8439944dd5ac19"},
+    {file = "memobj-0.9.1-py3-none-any.whl", hash = "sha256:115cd706dafc69161db7767a189c19ecae7614d3c51f37f368b84bca2310c24e"},
+    {file = "memobj-0.9.1.tar.gz", hash = "sha256:23ec042c50b3718e37e9e666b9d8f228503891d9e4f00ebb29fb714dc5bda52d"},
 ]
 regex = [
     {file = "regex-2022.9.13-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:0394265391a86e2bbaa7606e59ac71bd9f1edf8665a59e42771a9c9adbf6fd4f"},
