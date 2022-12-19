@@ -19,7 +19,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "iced-x86"
-version = "1.17.0"
+version = "1.18.0"
 description = "iced-x86 is a blazing fast and correct x86/x64 disassembler, assembler and instruction decoder"
 category = "main"
 optional = false
@@ -59,16 +59,15 @@ colorama = [
     {file = "colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
 ]
 iced-x86 = [
-    {file = "iced-x86-1.17.0.tar.gz", hash = "sha256:a18d5649aafadd72f2c3c0ad7a82fd49018e8061951df97cb9be04fad5f633d9"},
-    {file = "iced_x86-1.17.0-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:5c2d98794f634a6e7552127c4a497fe272b719fe796d2c5332ba8a4b88946886"},
-    {file = "iced_x86-1.17.0-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c46cd850ce144b5f9fca7072a2e9a754268e5d15e2377bafa4b95a6fc8a142dc"},
-    {file = "iced_x86-1.17.0-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:0782d7531c67cbaab53acf9db294c00bc058ed4beea32667d28d95994abc5b28"},
-    {file = "iced_x86-1.17.0-cp37-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:0b4e98ab870495ab5951049fc960ed905b93ce79045efe299522dfb163270146"},
-    {file = "iced_x86-1.17.0-cp37-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:dc96b7b24a7e26ec551de933ca1f396c588fd0e79ccea5a40e3dd563986c1587"},
-    {file = "iced_x86-1.17.0-cp37-abi3-win32.whl", hash = "sha256:099b243660d30abef5f8a5f0614b99b8a2689a4ad86f9b77fd8253727e480cb2"},
-    {file = "iced_x86-1.17.0-cp37-abi3-win_amd64.whl", hash = "sha256:5f3730425345ecdf135ced0559650edd984bc1f2b358a0edf6131beefd27a5cb"},
-    {file = "iced_x86-1.17.0-pp38-pypy38_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:c1d43be86fc18090bb2924ce5f0d12658cd93bef92e38c0572ec61d5cefc5e2b"},
-    {file = "iced_x86-1.17.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:2a43e05f8b8cb121833982dd2e4c69937c252a8f8db016de4939bbed9c379dc1"},
+    {file = "iced-x86-1.18.0.tar.gz", hash = "sha256:55fd256535cffd636963009b877d1c5e54bf57321f4ffa0e28ba4722e163d2fa"},
+    {file = "iced_x86-1.18.0-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:1ca4229f4c43ef5082a8c8a2b18e97ff32a1536c2ad3cff7955b31ac603a684b"},
+    {file = "iced_x86-1.18.0-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:532be65bc847a7abb617fc7bb85e005f0b949fd1e8e078361346cafc851f8c26"},
+    {file = "iced_x86-1.18.0-cp37-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:04cd278061e9dd70d757deff62d4f92d8ed0a5f18dc0bbaf5f47c96ca4b1d69f"},
+    {file = "iced_x86-1.18.0-cp37-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:7db11fb7cd4dbbadc039461a0e1c3740282a45af72045748aa6d544951e43cc0"},
+    {file = "iced_x86-1.18.0-cp37-abi3-win32.whl", hash = "sha256:1371eaf35ea133ba5f946d053f0db79e1a45904d1e1ed95d08677567281f24a0"},
+    {file = "iced_x86-1.18.0-cp37-abi3-win_amd64.whl", hash = "sha256:8e85c85467a4029e29932825ac2bf59617e34725173902f52391fa93ef4b276a"},
+    {file = "iced_x86-1.18.0-pp38-pypy38_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:62b667b4f15f198dc05ea2cf15c1d8581c5c49cea751478e8b1c085a4c91ef87"},
+    {file = "iced_x86-1.18.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:92360eb336dae5b976d1adfadc0c5bde1ce7cfd2cc4e02bf559b0f35f6f39ffc"},
 ]
 memobj = [
     {file = "memobj-0.9.1-py3-none-any.whl", hash = "sha256:115cd706dafc69161db7767a189c19ecae7614d3c51f37f368b84bca2310c24e"},
