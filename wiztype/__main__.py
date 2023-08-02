@@ -33,7 +33,7 @@ def main(outfile: Path, version: int, indent: int | None):
 
     revision = revision_file.read_text().strip()
 
-    if str(outfile) == "use revision":
+    if str(outfile) == "use revision" or outfile == b"use revision":
         outfile = Path(revision.replace(".", "_") + ".json")
 
     click.echo(f"dumping types for revision {revision} to {outfile}")
