@@ -6,8 +6,10 @@ HASH_CALL_PATTERN = rb"\xE8....\x48\x3B\x18\x74\x12"
 
 
 def _get_root_node(process: WindowsProcess) -> HashNode:
-    # assume it's the first one, need module filtering
-    hash_call_addr = process.scan_memory(HASH_CALL_PATTERN)[0]
+    # for now this pattern is unique in WizardGraphicalClient.exe
+    # note that there is an ambiguous match in the bug reporter,
+    # which is why we restrict the scan here
+    hash_call_addr = process.scan_memory(HASH_CALL_PATTERN, module="WizardGraphicalClient.exe")[0]
 
     # E8 [B2 43 00 00]
     call_offset = process.read_formatted(hash_call_addr + 1, "i")

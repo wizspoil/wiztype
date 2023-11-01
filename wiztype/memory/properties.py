@@ -1,7 +1,7 @@
 from typing import Any
 
-from iced_x86 import Decoder, Instruction, Code, Register, MemoryOperand
-from memobj import MemoryProperty, MemoryObject
+from iced_x86 import Code, Decoder, Instruction, Register
+from memobj import MemoryObject, MemoryProperty
 
 
 class CppString(MemoryProperty):
@@ -13,17 +13,11 @@ class CppString(MemoryProperty):
     def from_memory(self) -> Any:
         length = self.memory_object.memobj_process.read_formatted(
             self.memory_object.base_address + self.offset + 16,
-            "i",
+            self.pointer_format_string,
         )
 
         if length >= self.sso_size:
-            if self.memory_object.memobj_process.process_64_bit:
-                pointer_format = "Q"
-            else:
-                pointer_format = "I"
-
-            address = self.read_formatted_from_offset(pointer_format)
-
+            address = self.read_formatted_from_offset(self.pointer_format_string)
         else:
             address = self.memory_object.base_address + self.offset
 
@@ -52,13 +46,13 @@ class SharedVector(MemoryProperty):
         self.object_type = object_type
 
     def from_memory(self) -> Any:
-        start = self.read_formatted_from_offset(self.pointer_format_string)
-        end = self.memory_object.memobj_process.read_formatted(
-            self.memory_object.base_address + 8 + self.offset,
+        head = self.read_formatted_from_offset(self.pointer_format_string)
+        tail = self.memory_object.memobj_process.read_formatted(
+            self.memory_object.base_address + self.offset + 8,
             self.pointer_format_string
         )
 
-        size = end - start
+        size = tail - head
         element_number = size // 16
 
         # less than 0 on dealloc
@@ -68,7 +62,7 @@ class SharedVector(MemoryProperty):
         if element_number > self.max_size:
             raise ValueError(f"Size was {element_number} and the max was {self.max_size}")
 
-        element_data = self.memory_object.memobj_process.read_memory(start, size)
+        element_data = self.memory_object.memobj_process.read_memory(head, size)
 
         pointers = []
         data_position = 0
@@ -101,25 +95,18 @@ class SharedVector(MemoryProperty):
         pass
 
     def memory_size(self) -> int:
-        pointer_size = 8 if self.memory_object.memobj_process.process_64_bit else 4
-        return pointer_size * 3
+        return self.pointer_size * 3
 
 
 class PropertyEnumOptions(MemoryProperty):
     def read_cpp_string(self, address: int, *, sso_size: int = 16, encoding: str = "utf-8"):
         length = self.memory_object.memobj_process.read_formatted(
             address + 16,
-            "I",
+            self.pointer_format_string,
         )
 
         if length >= sso_size:
-            if self.memory_object.memobj_process.process_64_bit:
-                pointer_format = "Q"
-            else:
-                pointer_format = "I"
-
-            address = self.memory_object.memobj_process.read_formatted(address, pointer_format)
-
+            address = self.memory_object.memobj_process.read_formatted(address, self.pointer_format_string)
         else:
             address = address
 
@@ -162,8 +149,7 @@ class PropertyEnumOptions(MemoryProperty):
         raise NotImplementedError()
 
     def memory_size(self) -> int:
-        pointer_size = 8 if self.memory_object.memobj_process.process_64_bit else 4
-        return pointer_size * 2
+        return self.pointer_size * 2
 
 
 class ContainerName(MemoryProperty):

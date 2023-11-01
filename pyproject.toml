@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wiztype"
-version = "0.1.6"
+version = "0.1.7"
 description = "A type dumper for wizard101"
 authors = ["StarrFox <starrfox6312@gmail.com>"]
 license = "MIT"
