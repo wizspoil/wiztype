@@ -11,20 +11,21 @@ class CppString(MemoryProperty):
         self.sso_size = sso_size
 
     def from_memory(self) -> Any:
-        length = self.memory_object.memobj_process.read_formatted(
-            self.memory_object.base_address + self.offset + 16,
+        length = self.process.read_formatted(
+            self.offset_address + 16,
             self.pointer_format_string,
         )
-
-        if length >= self.sso_size:
+        capacity = self.process.read_formatted(
+            self.offset_address + 16 + 8,
+            self.pointer_format_string,
+        )
+        
+        if capacity >= self.sso_size:
             address = self.read_formatted_from_offset(self.pointer_format_string)
         else:
-            address = self.memory_object.base_address + self.offset
+            address = self.offset_address
 
-        try:
-            return self.memory_object.memobj_process.read_memory(address, length).decode(self.encoding)
-        except UnicodeDecodeError:
-            return ""
+        return self.process.read_memory(address, length).decode(self.encoding)
 
     def to_memory(self, value: Any):
         raise NotImplementedError()
