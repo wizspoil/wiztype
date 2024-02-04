@@ -23,6 +23,9 @@ class TypeDumper:
             formatted_properties = []
 
             if property_list := data.property_list:
+                # print(f"{hex(property_list.base_address)=}")
+                # exit()
+
                 for property_ in property_list.properties:
                     formatted_enum_options = []
                     if (enum_options := property_.enum_options) is not None:

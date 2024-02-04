@@ -42,7 +42,7 @@ class PropertyList(MemoryObject):
     pointer_version: "Type" = DereffedPointer(0x30, "Type")
     properties: list["Property"] = SharedVector(0x58, object_type="Property")
     functions: list["Function"] = SharedVector(0x70, object_type="Function")
-    name: str = CppString(0xB8, sso_size=10)
+    name: str = CppString(0xB8)
 
 
 class Property(MemoryObject):
