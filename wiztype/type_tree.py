@@ -2,26 +2,35 @@ from memobj import WindowsProcess
 
 from .memory import HashNode
 
-HASH_CALL_PATTERN = rb"\xE8....\x48\xBD........\x48\x3B\x38\x74\x12"
+HASH_CALL_PATTERN1 = rb"\xE8....\x48\xBD........\x48\x3B\x38\x74\x12"
+
+HASH_CALL_PATTERN2 = rb"\xE8....\x48\x3B\x18\x74\x12"
 
 
 def _get_root_node(process: WindowsProcess) -> HashNode:
     # for now this pattern is unique in WizardGraphicalClient.exe
     # note that there is an ambiguous match in the bug reporter,
     # which is why we restrict the scan here
-    hash_call_addr = process.scan_memory(HASH_CALL_PATTERN, module="WizardGraphicalClient.exe")[0]
+    try:
+        hash_call_addr = process.scan_memory(HASH_CALL_PATTERN1, module="WizardGraphicalClient.exe")[0]
+        tree_offset = 44
+        lea_instruction_offset = 41
+    except IndexError: # Wizard101 swaps compilation options frequently, so second pattern is nice
+        hash_call_addr = process.scan_memory(HASH_CALL_PATTERN2, module="WizardGraphicalClient.exe")[0]
+        tree_offset = 53
+        lea_instruction_offset = 50
 
-    # E8 [73 46 00 00]
+    # E8 [73 46 00 00] or E8 [B2 43 00 00]
     call_offset = process.read_formatted(hash_call_addr + 1, "i")
 
     # 5 is the length of the call instruction
     call_addr = hash_call_addr + call_offset + 5
 
-    # 48 8B 05 [D8 41 EC 01]
-    hash_tree_offset = process.read_formatted(call_addr + 44, "i")
+    # 48 8B 05 [D8 41 EC 01] or 48 8B 05 [BF 0A F7 01]
+    hash_tree_offset = process.read_formatted(call_addr + tree_offset, "i")
 
-    # 41 is start of the lea instruction and 7 is the length of it
-    hash_tree_addr = call_addr + 41 + hash_tree_offset + 7
+    # 41 or 50 is start of the lea instruction and 7 is the length of it
+    hash_tree_addr = call_addr + lea_instruction_offset + hash_tree_offset + 7
 
     pointer = process.read_formatted(hash_tree_addr, "Q")
     address = process.read_formatted(pointer, "Q")
